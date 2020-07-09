@@ -11,3 +11,6 @@ class Animal(models.Model):
     height = models.DecimalField(max_digits=4, decimal_places=2)
     spec_features = models.TextField()
     deleted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.name} {self.age} {self.arrival_date}"
