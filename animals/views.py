@@ -1,9 +1,13 @@
-from django.http import HttpResponse
+from datetime import date
+from django.http import HttpResponse, HttpResponseRedirect
 
 from django.shortcuts import render
 from django.views import View
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
-from animals.forms import IndexForm, ShowForm
+from animals.forms import IndexForm, ShowForm, AddForm
 from animals.models import Animal
 
 
@@ -39,7 +43,29 @@ class ShowAnimalView(View):
 
 class AddAnimalView(View):
     """Добавляет новое животное в БД"""
-    pass
+    form_class = AddForm
+    template_name = "animals/add.html"
+
+    @method_decorator(login_required)
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    @method_decorator(login_required)
+    def post(self, request):
+        data = request.POST
+        form = self.form_class(request.POST)
+        arrival_date = date(int(data.get("arrival_date_year")), int(data.get("arrival_date_month")), int(data.get("arrival_date_day")))
+        if form.is_valid():
+            animal = Animal.objects.create(
+                name=data.get("name"),
+                age=data.get("age"),
+                arrival_date=arrival_date,
+                weight=data.get("weight"),
+                height=data.get("height"),
+                spec_features=data.get("spec_features")
+            )
+        return HttpResponseRedirect(reverse('animals:index'))
 
 
 class EditAnimalView(View):

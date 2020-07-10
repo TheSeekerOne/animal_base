@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views import View
 from django.urls import reverse
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, authenticate, get_user
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -24,6 +24,9 @@ class RegisterView(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             new_user = form.save()
+            user = get_user(request)
+            user.is_staff = True
+            user.save()
             authenticated_user = authenticate(username=new_user.username,
                                               password=request.POST['password1'])
             login(request, authenticated_user)
