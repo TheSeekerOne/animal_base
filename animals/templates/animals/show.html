@@ -5,9 +5,9 @@
 {{ form.as_p }}
 </br>
 
-{% if user.is_authenticated %}
+{% if is_user %}
     <button onclick="document.location='/animals/edit/{{ animal_id }}'">Редактировать</button>
-    {% if user.is_staff %}
+    {% if is_admin %}
         <button onclick="document.location='/animals/delete/{{ animal_id }}'">Удалить</button>
     {% endif %}
 {% endif %}
