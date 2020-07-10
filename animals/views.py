@@ -1,9 +1,10 @@
 from datetime import date
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.urls import reverse
 from django.utils.decorators import method_decorator
+from django.utils import timezone
 from django.db.models import Q
 from django.contrib.auth import get_user
 
@@ -60,22 +61,23 @@ class AddAnimalView(View):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        data = request.POST
         form = self.form_class(request.POST)
-        arrival_date = date(int(data.get("arrival_date_year")),
-                            int(data.get("arrival_date_month")),
-                            int(data.get("arrival_date_day"))
-                            )
         if form.is_valid():
-            animal = Animal.objects.create(
-                name=data.get("name"),
-                age=data.get("age"),
-                arrival_date=arrival_date,
-                weight=data.get("weight"),
-                height=data.get("height"),
-                spec_features=data.get("spec_features")
+            animal = Animal(
+                name=form.cleaned_data.get("name"),
+                age=form.cleaned_data.get("age"),
+
+                weight=form.cleaned_data.get("weight"),
+                height=form.cleaned_data.get("height"),
+                spec_features=form.cleaned_data.get("spec_features")
             )
-        return HttpResponseRedirect(reverse('animals:index'))
+            arrival_date = form.cleaned_data.get("arrival_date")
+            if arrival_date:
+                animal.arrival_date = arrival_date
+            animal.save()
+            return HttpResponseRedirect(reverse('animals:index'))
+        else:
+            return HttpResponse(status=400)
 
 
 @method_decorator(groups_required(names=("user", "admin")), name="dispatch")
@@ -90,23 +92,23 @@ class EditAnimalView(View):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request, animal_id):
-        data = request.POST
         form = self.form_class(request.POST)
-        arrival_date = date(int(data.get("arrival_date_year")),
-                            int(data.get("arrival_date_month")),
-                            int(data.get("arrival_date_day"))
-                            )
         if form.is_valid():
             animal = Animal.objects.filter(pk=animal_id)
+            if not len(list(animal)):
+                return HttpResponse(status=404)
+            arrival_date = form.cleaned_data.get("arrival_date") or timezone.now().date()
             animal.update(
-                name=data.get("name"),
-                age=data.get("age"),
+                name=form.cleaned_data.get("name"),
+                age=form.cleaned_data.get("age"),
                 arrival_date=arrival_date,
-                weight=data.get("weight"),
-                height=data.get("height"),
-                spec_features=data.get("spec_features")
+                weight=form.cleaned_data.get("weight"),
+                height=form.cleaned_data.get("height"),
+                spec_features=form.cleaned_data.get("spec_features")
             )
-        return HttpResponseRedirect(reverse('animals:index'))
+            return HttpResponseRedirect(reverse('animals:index'))
+        else:
+            return HttpResponse(status=400)
 
 
 @method_decorator(groups_required(names=("admin",)), name="dispatch")

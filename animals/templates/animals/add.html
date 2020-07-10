@@ -1,5 +1,6 @@
 {% extends "animals/base.html" %}
 {% load bootstrap3 %}
+
 {% block content %}
 
 <p>Добавляем конкретное животное</p>
@@ -11,4 +12,10 @@
         <button type="submit" class="save btn btn-primary">Сохранить</button>
     {% endbuttons %}
 </form>
+
+<script>
+  $(function () {
+    $('#id_arrival_date').datepicker();
+  });
+</script>
 {% endblock content%}

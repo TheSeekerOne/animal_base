@@ -76,7 +76,11 @@ class EditAnimalView(View):
             return HttpResponse(status=400)
 
 
+@method_decorator(csrf_exempt, name="dispatch")
+@method_decorator(basicauth, name="dispatch")
+@method_decorator(groups_required(names=("admin",)), name="dispatch")
 class DeleteAnimalView(View):
-
-    def delete(self):
-        pass
+    def delete(self, request, animal_id):
+        animal = get_object_or_404(Animal, pk=animal_id)
+        animal.delete()
+        return HttpResponse(status=200)
