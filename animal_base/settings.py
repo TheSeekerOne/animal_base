@@ -37,9 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # other apps
+    'bootstrap3',
     # my apps
     'animals',
     'users',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -121,3 +124,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGIN_URL = '/users/login/'
+
+BOOTSTRAP3 = {
+    'include_jquery': True,
+}

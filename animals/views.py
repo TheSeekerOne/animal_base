@@ -9,7 +9,8 @@ from django.contrib.auth import get_user
 
 from animals.forms import IndexForm, ShowForm, AddForm
 from animals.models import Animal
-from animals.utils import get_data_by_id, groups_required
+from animals.utils import get_data_by_id
+from animals.decorators import groups_required
 
 
 class IndexView(View):

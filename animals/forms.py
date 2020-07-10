@@ -18,7 +18,7 @@ class ShowForm(forms.Form):
 class AddForm(forms.Form):
     name = forms.CharField(max_length=64, required=True, widget=forms.TextInput)
     age = forms.IntegerField(min_value=1, max_value=150, required=True)
-    arrival_date = forms.DateField(widget=forms.SelectDateWidget(empty_label="Nothing"))
+    arrival_date = forms.DateField(widget=forms.SelectDateWidget(empty_label="Nothing"), required=False)
     weight = forms.FloatField(min_value=1, max_value=9999, required=True)
     height = forms.FloatField(min_value=1, max_value=99, required=True)
     spec_features = forms.CharField(widget=forms.Textarea)

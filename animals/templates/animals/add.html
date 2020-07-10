@@ -1,11 +1,14 @@
 {% extends "animals/base.html" %}
+{% load bootstrap3 %}
 {% block content %}
 
 <p>Добавляем конкретное животное</p>
 
 <form method="POST" action="">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button name="submit"> Сохранить </button>
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="save btn btn-primary">Сохранить</button>
+    {% endbuttons %}
 </form>
 {% endblock content%}

@@ -1,13 +1,18 @@
 {% extends "animals/base.html" %}
+{% load bootstrap3 %}
 {% block content %}
 <p>База данных животных для приютов</p>
 <form method="POST" class="post-form" action="show/">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="save btn btn-default">Выбрать</button>
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="save btn btn-primary">Выбрать</button>
+    {% endbuttons %}
 </form>
 {% if can_add %}
-    <button onclick="document.location='/animals/add/'">Добавить животное</button>
+    {% buttons %}
+    <button onclick="document.location='/animals/add/'" class="save btn btn-primary">Добавить животное</button>
+    {% endbuttons %}
 {% endif %}
 {% endblock content%}
 

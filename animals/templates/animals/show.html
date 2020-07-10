@@ -1,14 +1,17 @@
 {% extends "animals/base.html" %}
+{% load bootstrap3 %}
 {% block content %}
 
 <p>Смотрим конкретное животное</p>
-{{ form.as_p }}
+{% bootstrap_form form %}
 </br>
 
+{% buttons %}
 {% if is_user %}
-    <button onclick="document.location='/animals/edit/{{ animal_id }}'">Редактировать</button>
+    <button onclick="document.location='/animals/edit/{{ animal_id }}'" class="btn btn-primary">Редактировать</button>
     {% if is_admin %}
-        <button onclick="document.location='/animals/delete/{{ animal_id }}'">Удалить</button>
+        <button onclick="document.location='/animals/delete/{{ animal_id }}'" class="btn btn-primary">Удалить</button>
     {% endif %}
 {% endif %}
+{% endbuttons %}
 {% endblock content%}
