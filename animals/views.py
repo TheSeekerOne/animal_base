@@ -8,16 +8,27 @@ from django.utils import timezone
 from django.db.models import Q
 from django.contrib.auth import get_user
 
-from animals.forms import IndexForm, ShowForm, AddForm
+from animals.forms import AnimalForm, ShowForm, AddForm
 from animals.models import Animal
 from animals.utils import get_data_by_id
 from animals.decorators import groups_required
 
+from django.contrib.auth.models import User, Group, Permission
+
 
 class IndexView(View):
-    """Выводит информацию об API на главную страницу"""
-    form_class = IndexForm
+    form_class = AddForm
     template_name = 'animals/index.html'
+
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+
+class AnimalView(View):
+    """Выводит информацию об API на главную страницу"""
+    form_class = AnimalForm
+    template_name = 'animals/animal.html'
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
@@ -106,7 +117,7 @@ class EditAnimalView(View):
                 height=form.cleaned_data.get("height"),
                 spec_features=form.cleaned_data.get("spec_features")
             )
-            return HttpResponseRedirect(reverse('animals:index'))
+            return HttpResponseRedirect(reverse('animals:animal'))
         else:
             return HttpResponse(status=400)
 
@@ -117,4 +128,4 @@ class DeleteAnimalView(View):
     def get(self, request, animal_id):
         animal = get_object_or_404(Animal, pk=animal_id)
         animal.delete()
-        return HttpResponseRedirect(reverse('animals:index'))
+        return HttpResponseRedirect(reverse('animals:animal'))

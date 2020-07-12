@@ -6,22 +6,20 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 
 
-# def groups_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url=None, names=None):
-#     def check_user_groups(user):
-#         if names:
-#             if not any(map(lambda name: user.groups.filter(name=name).count(), names)):
-#                 # raise PermissionDenied
-#                 return HttpResponse(status=403)
-#         return True
-#
-#     actual_decorator = user_passes_test(
-#         check_user_groups,
-#         login_url=login_url,
-#         redirect_field_name=redirect_field_name
-#     )
-#     if function:
-#         return actual_decorator(function)
-#     return actual_decorator
+def permission_required(function=None, names=None):
+    """Декоратор проверяющший наличие пользователя в определенных группах."""
+    def decorator_group(view_func):
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            if names:
+                if not any(map(lambda name: request.user.has_perm(name), names)):
+                    return HttpResponse(status=403)
+            return view_func(request, *args, **kwargs)
+        return _wrapped_view
+
+    if function:
+        return decorator_group(function)
+    return decorator_group
 
 
 def groups_required(function=None, names=None):

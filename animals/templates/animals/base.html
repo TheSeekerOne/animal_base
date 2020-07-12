@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Learning Log</title>
+        <title>Animal base</title>
         {% bootstrap_css %}
         {% bootstrap_javascript %}
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -23,7 +23,8 @@
                         data-toggle="collapse" data-target="#navbar"
                         aria-expanded="false" aria-controls="navbar">
                     </button>
-                    <a class="navbar-brand" href="{% url 'animals:index' %}">Animals</a>
+                    <a class="navbar-brand" href="{% url 'index' %}">Start Page</a>
+                    <a class="navbar-brand" href="{% url 'animals:animal' %}">Animals</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">

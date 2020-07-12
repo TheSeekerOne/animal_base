@@ -44,7 +44,7 @@ class AddAnimalView(View):
             if arrival_date:
                 animal.arrival_date = arrival_date
             animal.save()
-            return HttpResponse(status=201)
+            return JsonResponse({"id": animal.id}, status=201)
         else:
             print("form is not valid")
             return HttpResponse(status=400)

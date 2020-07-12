@@ -3,7 +3,7 @@ from django.forms.fields import DateField
 from animals.models import Animal
 
 
-class IndexForm(forms.Form):
+class AnimalForm(forms.Form):
     animals = forms.ModelChoiceField(queryset=Animal.objects.all())
 
 

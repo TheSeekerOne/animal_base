@@ -9,7 +9,7 @@ from django.contrib.auth.forms import UserCreationForm
 def logout_view(request):
     """Завершает сеанс работы с приложением."""
     logout(request)
-    return HttpResponseRedirect(reverse('animals:index'))
+    return HttpResponseRedirect(reverse('animals:animal'))
 
 
 class RegisterView(View):
@@ -30,4 +30,4 @@ class RegisterView(View):
             authenticated_user = authenticate(username=new_user.username,
                                               password=request.POST['password1'])
             login(request, authenticated_user)
-            return HttpResponseRedirect(reverse('animals:index'))
+            return HttpResponseRedirect(reverse('animals:animal'))
