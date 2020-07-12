@@ -19,7 +19,6 @@ class AnimalView(View):
         else:
             animal = get_object_or_404(Animal, pk=animal_id)
             animal = model_to_dict(animal)
-            print(animal)
             return JsonResponse(animal, status=200)
 
 
@@ -46,7 +45,6 @@ class AddAnimalView(View):
             animal.save()
             return JsonResponse({"id": animal.id}, status=201)
         else:
-            print("form is not valid")
             return HttpResponse(status=400)
 
 

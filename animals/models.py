@@ -5,20 +5,26 @@ from django.utils import timezone
 
 
 class SoftDeletionQuerySet(QuerySet):
+    """QuerySet определяющий поведение при удалении объекта"""
+
     def delete(self):
+        """Подменяет вызов delete на update и изменяет параметр deleted_at"""
         return super(SoftDeletionQuerySet, self).update(deleted_at=timezone.now())
 
     def hard_delete(self):
         return super(SoftDeletionQuerySet, self).delete()
 
     def alive(self):
+        """Возвращает все неудаленные объекты"""
         return self.filter(deleted_at=None)
 
     def dead(self):
+        """Возвращает все удаленные объекты"""
         return self.exclude(deleted_at=None)
 
 
 class SoftDeletionManager(models.Manager):
+    """Менеджер для мягкого удаления объектов"""
     def __init__(self, *args, **kwargs):
         self.alive_only = kwargs.pop('alive_only', True)
         super(SoftDeletionManager, self).__init__(*args, **kwargs)
@@ -33,6 +39,9 @@ class SoftDeletionManager(models.Manager):
 
 
 class SoftDeletionModel(models.Model):
+    """Базовый класс для определения моделей с возможностью 'мягкого удаления'
+    для обращения ко всем объектам влючая удаленные
+    использовать атрибут all_objects"""
     deleted_at = models.DateTimeField(blank=True, null=True)
 
     objects = SoftDeletionManager()
@@ -42,10 +51,18 @@ class SoftDeletionModel(models.Model):
         abstract = True
 
     def delete(self):
+        """
+        Метод реализующий мягкое удаление
+        :return:
+        """
         self.deleted_at = timezone.now()
         self.save()
 
     def hard_delete(self):
+        """
+        Метод реализующий классическое удаление, если потребуется удалить объект окончательно
+        :return:
+        """
         super(SoftDeletionModel, self).delete()
 
 
@@ -59,4 +76,4 @@ class Animal(SoftDeletionModel):
     spec_features = models.TextField()
 
     def __str__(self):
-        return f"{self.name} {self.age} {self.arrival_date}"
+        return f"Имя: {self.name}, возвраст: {self.age}, прибыл: {self.arrival_date}"

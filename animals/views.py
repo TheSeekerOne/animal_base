@@ -13,10 +13,9 @@ from animals.models import Animal
 from animals.utils import get_data_by_id
 from animals.decorators import groups_required
 
-from django.contrib.auth.models import User, Group, Permission
-
 
 class IndexView(View):
+    """Выводит информацию об API на главную страницу"""
     form_class = AddForm
     template_name = 'animals/index.html'
 
@@ -26,7 +25,7 @@ class IndexView(View):
 
 
 class AnimalView(View):
-    """Выводит информацию об API на главную страницу"""
+    """Отображает страницу с выбором животного для дальнейших действий"""
     form_class = AnimalForm
     template_name = 'animals/animal.html'
 
