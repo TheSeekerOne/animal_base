@@ -6,8 +6,9 @@
 
 #### Установка зависимостей
     $ pip install -r requirements.txt
-#### Миграция моделей БД
-    $ python manage.py makemigrations
+#### Миграция моделей БД    
+    $ python manage.py migrate
+    $ python manage.py makemigrations animals
     $ python manage.py migrate
 #### Создание администратора
     $ python manage.py createsuperuser
