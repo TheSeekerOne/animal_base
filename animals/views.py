@@ -85,7 +85,7 @@ class AddAnimalView(View):
             if arrival_date:
                 animal.arrival_date = arrival_date
             animal.save()
-            return HttpResponseRedirect(reverse('animals:index'))
+            return HttpResponseRedirect(reverse('animals:animal'))
         else:
             return HttpResponse(status=400)
 
