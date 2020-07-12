@@ -24,10 +24,12 @@ class RegisterView(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             new_user = form.save()
-            user = get_user(request)
-            user.is_staff = True
-            user.save()
             authenticated_user = authenticate(username=new_user.username,
                                               password=request.POST['password1'])
             login(request, authenticated_user)
+            user = get_user(request)
+            user.is_staff = True
+            user.save()
             return HttpResponseRedirect(reverse('animals:animal'))
+        context = {'form': form}
+        return render(request, 'users/register.html', context)
