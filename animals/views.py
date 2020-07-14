@@ -96,6 +96,12 @@ class EditAnimalView(View):
     form_class = AddForm
     template_name = "animals/edit.html"
 
+    def dispatch(self, request, animal_id, *args, **kwargs):
+        animal = Animal.objects.filter(pk=animal_id)
+        if not len(list(animal)):
+            return HttpResponse(status=404)
+        return super().dispatch(request, animal_id, *args, **kwargs)
+
     def get(self, request, animal_id):
         initial = get_data_by_id(animal_id)
         form = self.form_class(initial=initial)
@@ -105,8 +111,6 @@ class EditAnimalView(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             animal = Animal.objects.filter(pk=animal_id)
-            if not len(list(animal)):
-                return HttpResponse(status=404)
             arrival_date = form.cleaned_data.get("arrival_date") or timezone.now().date()
             animal.update(
                 name=form.cleaned_data.get("name"),
