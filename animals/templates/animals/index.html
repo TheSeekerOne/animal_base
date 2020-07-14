@@ -12,9 +12,9 @@
     </br>
     Пример:
     </br>
-    <label class="control-label" for="response1">Response</label>
-    <textarea id="response1" cols="40" rows="10" class="form-control" title="" required=""></textarea>
-    <button type="submit" class="save btn btn-primary" onclick="CallWebAPI1()">Отправить</button>
+    <label class="control-label" for="get_all_animals">Response</label>
+    <textarea id="get_all_animals" cols="40" rows="10" class="form-control" title="" required=""></textarea>
+    <button type="submit" class="save btn btn-primary" onclick="CallWebAPI('getAllAnimals')">Отправить</button>
 
 </p>
 </div>
@@ -27,11 +27,11 @@
 Вернет код 404 если объект отсутвует в БД
     </br>
     Пример:
-    <input type="number" id="animalid" min="1" class="form-control" title="" required="">
+    <input type="number" id="id_animalid" min="1" class="form-control" title="" required="">
     </br>
-    <label class="control-label" for="response2">Response</label>
-    <textarea id="response2" cols="40" rows="5" class="form-control" title="" required=""></textarea>
-    <button type="submit" class="save btn btn-primary" onclick="CallWebAPI2()">Отправить</button>
+    <label class="control-label" for="get_animal">Response</label>
+    <textarea id="get_animal" cols="40" rows="5" class="form-control" title="" required=""></textarea>
+    <button type="submit" class="save btn btn-primary" onclick="CallWebAPI('getAnimal')">Отправить</button>
 
 </p>
 </div>
@@ -51,19 +51,24 @@
 Вернет код 400, если запрос не пройдет валидацию
     </br>
 <form method="POST" action="" name="testadd">
-    {% bootstrap_form form %}
+    <div class="form-group"><label class="control-label" for="id_name_add">Name</label><input type="text" name="name" maxlength="64" class="form-control" placeholder="Name" title="" required="" id="id_name_add"></div>
+    <div class="form-group"><label class="control-label" for="id_age_add">Age</label><input type="number" name="age" min="1" max="150" class="form-control" placeholder="Age" title="" required="" id="id_age_add"></div>
+    <div class="form-group"><label class="control-label" for="id_arrival_date_add">Arrival date</label><input type="text" name="arrival_date" class="form-control" placeholder="Arrival date" title="" id="id_arrival_date_add"></div>
+    <div class="form-group"><label class="control-label" for="id_weight_add">Weight</label><input type="number" name="weight" min="1" max="9999" step="any" class="form-control" placeholder="Weight" title="" required="" id="id_weight_add"></div>
+    <div class="form-group"><label class="control-label" for="id_height_add">Height</label><input type="number" name="height" min="1" max="99" step="any" class="form-control" placeholder="Height" title="" required="" id="id_height_add"></div>
+    <div class="form-group"><label class="control-label" for="id_spec_features_add">Spec features</label><textarea name="spec_features" cols="40" rows="10" class="form-control" placeholder="Spec features" title="" required="" id="id_spec_features_add"></textarea></div>
 </form>
-    <label class="control-label" for="username">Username</label>
-    <input type="text"  maxlength="64" class="form-control" title="" required="" id="username">
-    <label class="control-label" for="password">Password</label>
-    <input type="text" maxlength="64" class="form-control" title="" required="" id="password">
+    <label class="control-label" for="username_add">Username</label>
+    <input type="text"  maxlength="64" class="form-control" title="" required="" id="username_add">
+    <label class="control-label" for="password_add">Password</label>
+    <input type="text" maxlength="64" class="form-control" title="" required="" id="password_add">
     {% buttons %}
-        <button type="submit" class="save btn btn-primary" onclick="CallWebAPI()">Отправить</button>
+        <button type="submit" class="save btn btn-primary" onclick="CallWebAPI('postAnimalAdd')">Отправить</button>
     {% endbuttons %}
 
  </br>
-    <label class="control-label" for="response">Response</label>
-    <textarea id="response" cols="40" rows="3" class="form-control" title="" required=""></textarea>
+    <label class="control-label" for="add_animal">Response</label>
+    <textarea id="add_animal" cols="40" rows="3" class="form-control" title="" required=""></textarea>
 
 </p>
 </div>
@@ -98,12 +103,12 @@
     <label class="control-label" for="password_edit">Password</label>
     <input type="text" maxlength="64" class="form-control" title="" required="" id="password_edit">
     {% buttons %}
-        <button type="submit" class="save btn btn-primary" onclick="CallWebAPI3()">Отправить</button>
+        <button type="submit" class="save btn btn-primary" onclick="CallWebAPI('postAnimalEdit')">Отправить</button>
     {% endbuttons %}
 
  </br>
-    <label class="control-label" for="response3">Response</label>
-    <textarea id="response3" cols="40" rows="3" class="form-control" title="" required=""></textarea>
+    <label class="control-label" for="edit_animal">Response</label>
+    <textarea id="edit_animal" cols="40" rows="3" class="form-control" title="" required=""></textarea>
 
 </p>
 </div>
@@ -125,121 +130,11 @@
     <label class="control-label" for="password_delete">Password</label>
     <input type="text" maxlength="64" class="form-control" title="" required="" id="password_delete">
     {% buttons %}
-        <button type="submit" class="save btn btn-primary" onclick="CallWebAPI4()">Отправить</button>
+        <button type="submit" class="save btn btn-primary" onclick="CallWebAPI('deleteAnimalDelete')">Отправить</button>
     {% endbuttons %}
     <label class="control-label" for="response4">Response</label>
-    <textarea id="response4" cols="40" rows="3" class="form-control" title="" required=""></textarea>
+    <textarea id="animal_delete" cols="40" rows="3" class="form-control" title="" required=""></textarea>
 </div>
-<script>
-
-function authenticateUser(user, password)
-{
-    var token = user + ":" + password;
-    // Should i be encoding this value????? does it matter???
-    // Base64 Encoding -> btoa
-    var hash = btoa(token);
-    return "Basic " + hash;
-}
-
-function CallWebAPI() {
-    var userName = document.getElementById("username").value
-    var passWord = document.getElementById("password").value
-
-    var name = document.getElementById("id_name").value
-    var age = document.getElementById("id_age").value
-    var arrival_date = document.getElementById("id_arrival_date").value
-    var weight = document.getElementById("id_weight").value
-    var height = document.getElementById("id_height").value
-    var spec_features = document.getElementById("id_spec_features").value
-
-    var body = 'name=' + encodeURIComponent(name) +
-            '&age=' + encodeURIComponent(age) + '&arrival_date=' + encodeURIComponent(arrival_date) +
-            '&weight=' + encodeURIComponent(weight) + '&height=' + encodeURIComponent(height) +
-            '&spec_features=' + encodeURIComponent(spec_features);
-
-    // New XMLHTTPRequest
-    var request = new XMLHttpRequest();
-    request.open("POST", "http://127.0.0.1:8000/api/animal/add/", false);
-    request.setRequestHeader("Authorization", authenticateUser(userName, passWord));
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    request.send(body);
-    // view request status
-
-    response.innerHTML = "Response Code: " + request.status + "\n" + request.responseText;
-}
-
-function CallWebAPI1() {
-    // New XMLHTTPRequest
-    var request = new XMLHttpRequest();
-    request.open("GET", "http://127.0.0.1:8000/api/animal/", false);
-    request.send();
-    // view request status
-    response1.innerHTML = "Response Code: " + request.status + "\n" + request.responseText;
-}
-
-function CallWebAPI2() {
-    // New XMLHTTPRequest
-    animalID = document.getElementById("animalid")
-    var request = new XMLHttpRequest();
-    request.open("GET", "http://127.0.0.1:8000/api/animal/" + animalID.value + "/", false);
-    request.send();
-    // view request status
-    response2.innerHTML = "Response Code: " + request.status + "\n" + request.responseText;
-}
-
-function CallWebAPI3() {
-    var userName = document.getElementById("username_edit").value
-    var passWord = document.getElementById("password_edit").value
-
-    var animalid = document.getElementById("id_animalid_edit").value
-    var name = document.getElementById("id_name_edit").value
-    var age = document.getElementById("id_age_edit").value
-    var arrival_date = document.getElementById("id_arrival_date_edit").value
-    var weight = document.getElementById("id_weight_edit").value
-    var height = document.getElementById("id_height_edit").value
-    var spec_features = document.getElementById("id_spec_features_edit").value
-
-    var body = 'name=' + encodeURIComponent(name) +
-            '&age=' + encodeURIComponent(age) + '&arrival_date=' + encodeURIComponent(arrival_date) +
-            '&weight=' + encodeURIComponent(weight) + '&height=' + encodeURIComponent(height) +
-            '&spec_features=' + encodeURIComponent(spec_features);
-
-    // New XMLHTTPRequest
-    var request = new XMLHttpRequest();
-    request.open("POST", "http://127.0.0.1:8000/api/animal/" + animalid + "/edit/", false);
-    request.setRequestHeader("Authorization", authenticateUser(userName, passWord));
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    request.send(body);
-    // view request status
-
-    response3.innerHTML = "Response Code: " + request.status + "\n" + request.responseText;
-}
-
-function CallWebAPI4() {
-    var userName = document.getElementById("username_delete").value
-    var passWord = document.getElementById("password_delete").value
-
-    var animalid = document.getElementById("id_animalid_delete").value
-
-    // New XMLHTTPRequest
-    var request = new XMLHttpRequest();
-    request.open("DELETE", "http://127.0.0.1:8000/api/animal/" + animalid + "/delete/", false);
-    request.setRequestHeader("Authorization", authenticateUser(userName, passWord));
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    request.send();
-    // view request status
-
-    response4.innerHTML = "Response Code: " + request.status + "\n" + request.responseText;
-}
-
-  $(function () {
-    $('#id_arrival_date').datepicker();
-  });
-
-  $(function () {
-    $('#id_arrival_date_edit').datepicker();
-  });
-</script>
 
 {% endblock content%}
 
