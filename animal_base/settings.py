@@ -125,8 +125,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    'animals/static',
+]
+
 LOGIN_URL = '/users/login/'
 
 BOOTSTRAP3 = {
     'include_jquery': True,
 }
+
