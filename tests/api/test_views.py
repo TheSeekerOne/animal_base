@@ -1,5 +1,4 @@
 import base64
-import json
 import random
 from datetime import date, datetime
 from decimal import Decimal
@@ -95,7 +94,6 @@ def user_token(db, user_group):
         'user', password='useruser', is_staff=True
     )
     user.groups.add(user_group)
-    user.save()
     token = base64.b64encode('user:useruser'.encode('utf-8'))
     return token.decode('ascii')
 
@@ -179,3 +177,86 @@ def test_get_animal_data(animals, client):
 
         assert isinstance(content.get('spec_features'), str)
         assert content.get('spec_features') == animal.spec_features
+
+
+@pytest.mark.django_db(transaction=True)
+def test_add_animal_by_user(client, user_token, data):
+    """post запрос на /api/animal/add/ с пользовательскими правами вернет код 201,
+     объект json {'id': id} и создаст объект в базе"""
+    url_template = '/api/animal/add/'
+    response = client.post(
+        url_template,
+        data=data,
+        HTTP_AUTHORIZATION=f'Basic {user_token}'
+    )
+    assert response.status_code == 201
+    document = response.json()
+    # Объект был сохранен в базу
+    animal = Animal.objects.get(pk=document['id'])
+    assert animal.name == 'Пёс Джона Уика'
+    assert animal.age == 6
+    assert animal.arrival_date == datetime.strptime('2020-04-03', "%Y-%m-%d").date()
+    assert animal.weight == Decimal("32.5")
+    assert animal.height == Decimal("0.5")
+    assert animal.spec_features == 'Хороший пёсик'
+
+
+@pytest.mark.django_db(transaction=True)
+def test_add_animal_by_admin(client, admin_token, data):
+    """post запрос на /api/animal/add/ с администраторскими правами вернет код 201,
+     объект json {'id': id} и создаст объект в базе"""
+    url_template = '/api/animal/add/'
+    response = client.post(
+        url_template,
+        data=data,
+        HTTP_AUTHORIZATION=f'Basic {admin_token}'
+    )
+    assert response.status_code == 201
+    document = response.json()
+    # Объект был сохранен в базу
+    animal = Animal.objects.get(pk=document['id'])
+    assert animal.name == 'Пёс Джона Уика'
+    assert animal.age == 6
+    assert animal.arrival_date == datetime.strptime('2020-04-03', "%Y-%m-%d").date()
+    assert animal.weight == Decimal("32.5")
+    assert animal.height == Decimal("0.5")
+    assert animal.spec_features == 'Хороший пёсик'
+
+
+@pytest.mark.django_db(transaction=True)
+def test_add_animal_mo_head(client, data):
+    """post запрос на /api/animal/add/ без Authorization header вернет 401"""
+    url_template = '/api/animal/add/'
+    response = client.post(
+        url_template,
+        data=data
+    )
+    assert response.status_code == 401
+
+
+@pytest.mark.django_db(transaction=True)
+def test_add_animal_by_guest(client, guest_token, data):
+    """post запрос на /api/animal/add/ с гостевыми правами вернет 403"""
+    url_template = '/api/animal/add/'
+    response = client.post(
+        url_template,
+        data=data,
+        HTTP_AUTHORIZATION=f'Basic {guest_token}'
+    )
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db(transaction=True)
+@pytest.mark.parametrize('field', [
+        'name', 'age', 'weight', 'height',
+    ])
+def test_invalid_add_animal(client, admin_token, data, field):
+    """post запрос на /api/animal/add/ с невалидными данными вернет код 400"""
+    url_template = '/api/animal/add/'
+    del(data[field])
+    response = client.post(
+        url_template,
+        data=data,
+        HTTP_AUTHORIZATION=f'Basic {admin_token}'
+    )
+    assert response.status_code == 400
